@@ -1,0 +1,1 @@
+echo -kernel-name;uname -s; echo -nodename; uname -n; echo -kernel-release; uname -r; echo -kernel-version; uname -v; echo -machine; uname -m; echo -processor; uname -p; echo -hardware-platform; uname -i; echo -operating-system; uname -o
