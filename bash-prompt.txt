@@ -1,0 +1,7 @@
+if [[ $EUID -eq 0 ]]; then
+    # Root kullanıcısıysa username kırmızı, geri kalan her şey beyaz
+    export PS1='\[\e[1;37m\]┌──[\[\e[38;5;196m\]\u\[\e[1;37m\]@\[\e[38;5;55m\]\h\[\e[1;37m\]]-[\w]\n└─\$ \[\e[0m\]'
+else
+    # Normal kullanıcıysa username ve hostname özel renkte, geri kalan her şey beyaz
+    export PS1='\[\e[1;37m\]┌──[\[\e[38;5;56m\]\u\[\e[1;37m\]@\[\e[38;5;55m\]\h\[\e[1;37m\]]-[\w]\n└─\$ \[\e[0m\]'
+fi
