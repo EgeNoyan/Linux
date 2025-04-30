@@ -1,0 +1,69 @@
+Arch installation
+
+# İnternet bağlantısını kontrol et
+ping -c 5 archlinux.org
+
+# Saat ve tarih ayarlarını yap
+timedatectl set-ntp true
+
+# Disk Bölümleme
+lsblk
+sgdisk -o -n 1:0:+512M -t 1:EF00 -n 2:0:0 -t 2:8304 /dev/sdX
+
+# Dosya sistemlerini oluştur
+mkfs.fat -F32 /dev/sdX1
+mkfs.ext4 -L ArchLinux /dev/sdX2
+
+# Bölümleri bağla
+mount /dev/sdX2 /mnt
+mount --mkdir /dev/sdX1 /mnt/boot
+
+# Paketleri kur
+pacstrap -K /mnt base base-devel linux linux-firmware vim sudo efibootmgr NetworkManager man-db man-pages grub polkit texinfo
+
+# fstab oluştur ve kontrol et
+genfstab -U /mnt >> /mnt/etc/fstab
+cat /mnt/etc/fstab
+
+# Chroot ortamına geç
+arch-chroot /mnt
+
+# Zaman dilimini ayarla
+ln -sf /usr/share/zoneinfo/Europe/Istanbul /etc/localtime
+hwclock --systohc
+
+# Locale ayarları
+vi /etc/locale.gen  # en_US.UTF-8 UTF-8 ve tr_TR.UTF-8 UTF-8 satırlarının başındaki # işaretini kaldır
+locale-gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "KEYMAP=trq" > /etc/vconsole.conf
+
+# Hostname belirle
+echo "ArchPC" > /etc/hostname
+
+# initramfs oluştur
+mkinitcpio -P
+
+# Root şifresini ayarla
+passwd
+
+# GRUB kurulumu
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --recheck --removable
+grub-mkconfig -o /boot/grub/grub.cfg
+
+# Network Manager'ı aç
+systemctl enable NetworkManager
+
+# Kullanıcı oluştur ve sudo yetkisi ver
+useradd -m ege
+passwd ege
+groupadd wheel
+usermod -aG wheel ege
+
+# Sudo yetkisini aç
+EDITOR=vim visudo  # "%wheel ALL=(ALL:ALL) ALL" satırını aktif et
+
+# Çık ve yeniden başlat
+exit
+umount -R /mnt
+reboot
