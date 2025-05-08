@@ -8,7 +8,7 @@ timedatectl set-ntp true
 
 # Disk Bölümleme
 lsblk
-sgdisk -o -n 1:0:+512M -t 1:EF00 -n 2:0:0 -t 2:8304 /dev/sdX
+sgdisk -o -n 1:0:+10M -t 1:EF02 -n 2:0:+500M -t 2:EF00 -n 3:0:0 -t 3:8304 /dev/sdX
 
 # Dosya sistemlerini oluştur
 mkfs.fat -F32 /dev/sdX1
